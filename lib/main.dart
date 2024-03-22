@@ -99,156 +99,175 @@ class _MyHomePageState extends State<MyHomePage> {
             source: source, maxDuration: const Duration(seconds: 10));
         await _playVideo(file);
       } else if (isMultiImage) {
-        await _displayPickImageDialog(context,
-            (double? maxWidth, double? maxHeight, int? quality) async {
-          try {
-            final List<XFile> pickedFileList = isMedia
-                ? await _picker.pickMultipleMedia(
-                    maxWidth: maxWidth,
-                    maxHeight: maxHeight,
-                    imageQuality: quality,
-                  )
-                : await _picker.pickMultiImage(
-                    maxWidth: maxWidth,
-                    maxHeight: maxHeight,
-                    imageQuality: quality,
-                  );
-            setState(() {
-              _mediaFileList = pickedFileList;
-            });
-          } catch (e) {
-            setState(() {
-              _pickImageError = e;
-            });
-          }
-        });
-      } else if (isMedia) {
-        await _displayPickImageDialog(context,
-            (double? maxWidth, double? maxHeight, int? quality) async {
-          try {
-            final List<XFile> pickedFileList = <XFile>[];
-            final XFile? media = await _picker.pickMedia(
-              maxWidth: maxWidth,
-              maxHeight: maxHeight,
-              imageQuality: quality,
-            );
-            if (media != null) {
-              pickedFileList.add(media);
-              setState(() {
-                _mediaFileList = pickedFileList;
-              });
-            }
-          } catch (e) {
-            setState(() {
-              _pickImageError = e;
-            });
-          }
-        });
-      } else {
-        await _displayPickImageDialog(context,
-            (double? maxWidth, double? maxHeight, int? quality) async {
-          try {
-            final XFile? pickedFile = await _picker.pickImage(
-              source: source,
-              maxWidth: maxWidth,
-              maxHeight: maxHeight,
-              imageQuality: quality,
-            );
-            setState(() {
-              _setImageFileListFromFile(pickedFile);
-            });
-          } catch (e) {
-            setState(() {
-              _pickImageError = e;
-            });
-          }
-        });
-      }
+      } else if (isMedia) {}
     }
   }
 
   //CREO que esta es la que abre el explorador
 
-  Future<void> abrir(
-    ImageSource source, {
-    required BuildContext context,
-    bool isMultiImage = false,
-    bool isMedia = false,
-  }) async {
-    if (_controller != null) {
-      await _controller!.setVolume(0.0);
-    }
-    if (context.mounted) {
-      if (isMultiImage) {
-        await _displayPickImageDialog(
-          context,
-          (double? maxWidth, double? maxHeight, int? quality) async {
-            try {
-              final List<XFile> pickedFileList = isMedia
-                  ? await _picker.pickMultipleMedia(
-                      maxWidth: maxWidth,
-                      maxHeight: maxHeight,
-                      imageQuality: quality,
-                    )
-                  : await _picker.pickMultiImage(
-                      maxWidth: maxWidth,
-                      maxHeight: maxHeight,
-                      imageQuality: quality,
-                    );
-              setState(() {
-                _mediaFileList = pickedFileList;
-              });
-            } catch (e) {
-              setState(() {
-                _pickImageError = e;
-              });
-            }
-          },
-        );
-      } else if (isMedia) {
-        await _displayPickImageDialog(context,
-            (double? maxWidth, double? maxHeight, int? quality) async {
-          try {
-            final List<XFile> pickedFileList = <XFile>[];
-            final XFile? media = await _picker.pickMedia(
-              maxWidth: maxWidth,
-              maxHeight: maxHeight,
-              imageQuality: quality,
-            );
-            if (media != null) {
-              pickedFileList.add(media);
-              setState(() {
-                _mediaFileList = pickedFileList;
-              });
-            }
-          } catch (e) {
-            setState(() {
-              _pickImageError = e;
-            });
-          }
-        });
-      } else {
-        await _displayPickImageDialog(context,
-            (double? maxWidth, double? maxHeight, int? quality) async {
-          try {
-            final XFile? pickedFile = await _picker.pickImage(
-              source: source,
-              maxWidth: maxWidth,
-              maxHeight: maxHeight,
-              imageQuality: quality,
-            );
-            setState(() {
-              _setImageFileListFromFile(pickedFile);
-            });
-          } catch (e) {
-            setState(() {
-              _pickImageError = e;
-            });
-          }
-        });
-      }
-    }
-  }
+  // Future<void> abrir(
+  //   ImageSource source, {
+  //   required BuildContext context,
+  //   bool isMultiImage = false,
+  //   bool isMedia = false,
+  // }) async {
+  //   if (_controller != null) {
+  //     await _controller!.setVolume(0.0);
+  //   }
+  //   if (context.mounted) {
+  //     if (isMultiImage) {
+  //       await _displayPickImageDialog(
+  //         context,
+  //         (double? maxWidth, double? maxHeight, int? quality) async {
+  //           try {
+  //             final List<XFile> pickedFileList = isMedia
+  //                 ? await _picker.pickMultipleMedia(
+  //                     maxWidth: maxWidth,
+  //                     maxHeight: maxHeight,
+  //                     imageQuality: quality,
+  //                   )
+  //                 : await _picker.pickMultiImage(
+  //                     maxWidth: maxWidth,
+  //                     maxHeight: maxHeight,
+  //                     imageQuality: quality,
+  //                   );
+  //             setState(() {
+  //               _mediaFileList = pickedFileList;
+  //             });
+  //           } catch (e) {
+  //             setState(() {
+  //               _pickImageError = e;
+  //             });
+  //           }
+  //         },
+  //       );
+  //     } else if (isMedia) {
+  //       await _displayPickImageDialog(context,
+  //           (double? maxWidth, double? maxHeight, int? quality) async {
+  //         try {
+  //           final List<XFile> pickedFileList = <XFile>[];
+  //           final XFile? media = await _picker.pickMedia(
+  //             maxWidth: maxWidth,
+  //             maxHeight: maxHeight,
+  //             imageQuality: quality,
+  //           );
+  //           if (media != null) {
+  //             pickedFileList.add(media);
+  //             setState(() {
+  //               _mediaFileList = pickedFileList;
+  //             });
+  //           }
+  //         } catch (e) {
+  //           setState(() {
+  //             _pickImageError = e;
+  //           });
+  //         }
+  //       });
+  //     } else {
+  //       await _displayPickImageDialog(context,
+  //           (double? maxWidth, double? maxHeight, int? quality) async {
+  //         try {
+  //           final XFile? pickedFile = await _picker.pickImage(
+  //             source: source,
+  //             maxWidth: maxWidth,
+  //             maxHeight: maxHeight,
+  //             imageQuality: quality,
+  //           );
+  //           setState(() {
+  //             _setImageFileListFromFile(pickedFile);
+  //           });
+  //         } catch (e) {
+  //           setState(() {
+  //             _pickImageError = e;
+  //           });
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
+
+  // Future<void> _onImageButtonPressedNoTOCAR(
+  //   ImageSource source, {
+  //   required BuildContext context,
+  //   bool isMultiImage = false,
+  //   bool isMedia = false,
+  // }) async {
+  //   if (_controller != null) {
+  //     await _controller!.setVolume(0.0);
+  //   }
+  //   if (context.mounted) {
+  //     if (isVideo) {
+  //       final XFile? file = await _picker.pickVideo(
+  //           source: source, maxDuration: const Duration(seconds: 10));
+  //       await _playVideo(file);
+  //     } else if (isMultiImage) {
+  //       await _displayPickImageDialog(context,
+  //           (double? maxWidth, double? maxHeight, int? quality) async {
+  //         try {
+  //           final List<XFile> pickedFileList = isMedia
+  //               ? await _picker.pickMultipleMedia(
+  //                   maxWidth: maxWidth,
+  //                   maxHeight: maxHeight,
+  //                   imageQuality: quality,
+  //                 )
+  //               : await _picker.pickMultiImage(
+  //                   maxWidth: maxWidth,
+  //                   maxHeight: maxHeight,
+  //                   imageQuality: quality,
+  //                 );
+  //           setState(() {
+  //             _mediaFileList = pickedFileList;
+  //           });
+  //         } catch (e) {
+  //           setState(() {
+  //             _pickImageError = e;
+  //           });
+  //         }
+  //       });
+  //     } else if (isMedia) {
+  //       await _displayPickImageDialog(context,
+  //           (double? maxWidth, double? maxHeight, int? quality) async {
+  //         try {
+  //           final List<XFile> pickedFileList = <XFile>[];
+  //           final XFile? media = await _picker.pickMedia(
+  //             maxWidth: maxWidth,
+  //             maxHeight: maxHeight,
+  //             imageQuality: quality,
+  //           );
+  //           if (media != null) {
+  //             pickedFileList.add(media);
+  //             setState(() {
+  //               _mediaFileList = pickedFileList;
+  //             });
+  //           }
+  //         } catch (e) {
+  //           setState(() {
+  //             _pickImageError = e;
+  //           });
+  //         }
+  //       });
+  //     } else {
+  //       await _displayPickImageDialog(context,
+  //           (double? maxWidth, double? maxHeight, int? quality) async {
+  //         try {
+  //           final XFile? pickedFile = await _picker.pickImage(
+  //             source: source,
+  //             maxWidth: maxWidth,
+  //             maxHeight: maxHeight,
+  //             imageQuality: quality,
+  //           );
+  //           setState(() {
+  //             _setImageFileListFromFile(pickedFile);
+  //           });
+  //         } catch (e) {
+  //           setState(() {
+  //             _pickImageError = e;
+  //           });
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
 
   @override
   void deactivate() {
@@ -554,7 +573,66 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //Dialogo que pide los parametros deseados
-  Future<void> _displayPickImageDialog(
+  // Future<void> _displayPickImageDialog(
+  //     BuildContext context, OnPickImageCallback onPick) async {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: const Text('Agregar parámetros opcionales'),
+  //           content: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: <Widget>[
+  //               TextField(
+  //                 controller: maxWidthController,
+  //                 keyboardType:
+  //                     const TextInputType.numberWithOptions(decimal: true),
+  //                 decoration: const InputDecoration(
+  //                     hintText: 'Ingrese maxWidth si lo desea.'),
+  //               ),
+  //               TextField(
+  //                 controller: maxHeightController,
+  //                 keyboardType:
+  //                     const TextInputType.numberWithOptions(decimal: true),
+  //                 decoration: const InputDecoration(
+  //                     hintText: 'Ingrese maxHeight si lo desea'),
+  //               ),
+  //               TextField(
+  //                 controller: qualityController,
+  //                 keyboardType: TextInputType.number,
+  //                 decoration: const InputDecoration(
+  //                     hintText: 'Ingrese la calidad si lo desea'),
+  //               ),
+  //             ],
+  //           ),
+  //           actions: <Widget>[
+  //             TextButton(
+  //               child: const Text('CANCELAR'),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             ),
+  //             TextButton(
+  //                 child: const Text('ELEGIR'),
+  //                 onPressed: () {
+  //                   final double? width = maxWidthController.text.isNotEmpty
+  //                       ? double.parse(maxWidthController.text)
+  //                       : null;
+  //                   final double? height = maxHeightController.text.isNotEmpty
+  //                       ? double.parse(maxHeightController.text)
+  //                       : null;
+  //                   final int? quality = qualityController.text.isNotEmpty
+  //                       ? int.parse(qualityController.text)
+  //                       : null;
+  //                   onPick(width, height, quality);
+  //                   Navigator.of(context).pop();
+  //                 }),
+  //           ],
+  //         );
+  //       });
+  // }
+
+  Future<void> _displayPickImageDialogNOTOCAR(
       BuildContext context, OnPickImageCallback onPick) async {
     return showDialog(
         context: context,
