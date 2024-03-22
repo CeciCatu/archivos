@@ -167,6 +167,89 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  //CREO que esta es la que abre el explorador
+
+  Future<void> abrir(
+    ImageSource source, {
+    required BuildContext context,
+    bool isMultiImage = false,
+    bool isMedia = false,
+  }) async {
+    if (_controller != null) {
+      await _controller!.setVolume(0.0);
+    }
+    if (context.mounted) {
+      if (isMultiImage) {
+        await _displayPickImageDialog(
+          context,
+          (double? maxWidth, double? maxHeight, int? quality) async {
+            try {
+              final List<XFile> pickedFileList = isMedia
+                  ? await _picker.pickMultipleMedia(
+                      maxWidth: maxWidth,
+                      maxHeight: maxHeight,
+                      imageQuality: quality,
+                    )
+                  : await _picker.pickMultiImage(
+                      maxWidth: maxWidth,
+                      maxHeight: maxHeight,
+                      imageQuality: quality,
+                    );
+              setState(() {
+                _mediaFileList = pickedFileList;
+              });
+            } catch (e) {
+              setState(() {
+                _pickImageError = e;
+              });
+            }
+          },
+        );
+      } else if (isMedia) {
+        await _displayPickImageDialog(context,
+            (double? maxWidth, double? maxHeight, int? quality) async {
+          try {
+            final List<XFile> pickedFileList = <XFile>[];
+            final XFile? media = await _picker.pickMedia(
+              maxWidth: maxWidth,
+              maxHeight: maxHeight,
+              imageQuality: quality,
+            );
+            if (media != null) {
+              pickedFileList.add(media);
+              setState(() {
+                _mediaFileList = pickedFileList;
+              });
+            }
+          } catch (e) {
+            setState(() {
+              _pickImageError = e;
+            });
+          }
+        });
+      } else {
+        await _displayPickImageDialog(context,
+            (double? maxWidth, double? maxHeight, int? quality) async {
+          try {
+            final XFile? pickedFile = await _picker.pickImage(
+              source: source,
+              maxWidth: maxWidth,
+              maxHeight: maxHeight,
+              imageQuality: quality,
+            );
+            setState(() {
+              _setImageFileListFromFile(pickedFile);
+            });
+          } catch (e) {
+            setState(() {
+              _pickImageError = e;
+            });
+          }
+        });
+      }
+    }
+  }
+
   @override
   void deactivate() {
     if (_controller != null) {
@@ -176,14 +259,14 @@ class _MyHomePageState extends State<MyHomePage> {
     super.deactivate();
   }
 
-  @override
-  void dispose() {
-    _disposeVideoController();
-    maxWidthController.dispose();
-    maxHeightController.dispose();
-    qualityController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _disposeVideoController();
+  //   maxWidthController.dispose();
+  //   maxHeightController.dispose();
+  //   qualityController.dispose();
+  //   super.dispose();
+  // }
 
   Future<void> _disposeVideoController() async {
     if (_toBeDisposed != null) {
@@ -456,13 +539,28 @@ class _MyHomePageState extends State<MyHomePage> {
     return null;
   }
 
+  Future<void> dialogo(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return TextButton(
+          child: const Text('ELEGIR'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
+
+  //Dialogo que pide los parametros deseados
   Future<void> _displayPickImageDialog(
       BuildContext context, OnPickImageCallback onPick) async {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Add optional parameters'),
+            title: const Text('Agregar parámetros opcionales'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -471,32 +569,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(
-                      hintText: 'Enter maxWidth if desired'),
+                      hintText: 'Ingrese maxWidth si lo desea.'),
                 ),
                 TextField(
                   controller: maxHeightController,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(
-                      hintText: 'Enter maxHeight if desired'),
+                      hintText: 'Ingrese maxHeight si lo desea'),
                 ),
                 TextField(
                   controller: qualityController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                      hintText: 'Enter quality if desired'),
+                      hintText: 'Ingrese la calidad si lo desea'),
                 ),
               ],
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('CANCEL'),
+                child: const Text('CANCELAR'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
-                  child: const Text('PICK'),
+                  child: const Text('ELEGIR'),
                   onPressed: () {
                     final double? width = maxWidthController.text.isNotEmpty
                         ? double.parse(maxWidthController.text)
