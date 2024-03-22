@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:archivos/archivos/views/archivos_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'Image Picker Demo',
       home: MyHomePage(title: 'Image Picker Example'),
+      // title: 'Subir Archivos',
+      // home: ArchivosView(),
     );
   }
 }
