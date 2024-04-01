@@ -27,7 +27,10 @@ class ArchivosView extends StatelessWidget {
               Semantics(
                 label: 'image_picker_example_from_gallery',
                 child: FloatingActionButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    print("aqui");
+                    
+                  },
                   heroTag: 'image0',
                   tooltip: 'Elija una imagen de la galería.',
                   child: const Icon(Icons.photo),
@@ -67,26 +70,6 @@ class ArchivosView extends StatelessWidget {
                   heroTag: 'image2',
                   tooltip: 'Toma una foto',
                   child: const Icon(Icons.camera_alt),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  onPressed: () {},
-                  heroTag: 'video0',
-                  tooltip: 'Elija video de la galería',
-                  child: const Icon(Icons.video_library),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  onPressed: () {},
-                  heroTag: 'video1',
-                  tooltip: 'Grabar un vídeo',
-                  child: const Icon(Icons.videocam),
                 ),
               ),
             ],
