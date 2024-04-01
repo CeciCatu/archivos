@@ -1,9 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'selectors/image_selector.dart';
 import 'selectors/video_selector.dart';
 import 'selectors/media_preview.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 void main() {
   runApp(const MyApp());
@@ -34,8 +37,14 @@ class _HomePageState extends State<HomePage> {
 
   void _handleImageSelection(List<XFile>? selectedFiles) {
     if (selectedFiles != null) {
+      print(selectedFiles.length);
+      print(selectedFiles.first.name);
+      print(selectedFiles[1].name);
+
       setState(() {
-        _selectedImages = selectedFiles.map((xFile) => File(xFile.path)).toList();
+        _selectedImages =
+            selectedFiles.map((xFile) => File(xFile.path)).toList();
+        print(_selectedImages[0]);
       });
     }
   }
@@ -48,6 +57,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  nombres(List<File> imagen) {
+    List<String> nombresDeImagenes = [];
+
+    for (var imagen in imagen) {
+      String nombre = path.basename(imagen.path);
+      nombresDeImagenes.add(nombre);
+    }
+
+    return nombresDeImagenes;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,13 +78,21 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             ImageSelector(onSelectImages: _handleImageSelection),
-            if (_selectedImages.isNotEmpty)
-              ImagePreview(images: _selectedImages),
-            VideoSelector(onSelectVideo: _handleVideoSelection),
-            if (_selectedVideos.isNotEmpty)
-              Column(
-                children: _selectedVideos.map((video) => VideoPreview(videoFile: video)).toList(),
-              ),
+            // if (_selectedImages.isNotEmpty)
+              const Text("nombres de archivos"),
+              ListView.builder(
+                itemCount: _selectedImages.length,
+                itemBuilder: (context, index) {
+                  print(_selectedImages.length);
+                  return Text(nombres(_selectedImages)[index]);
+                },
+              )
+            // ImagePreview(images: _selectedImages),
+            // VideoSelector(onSelectVideo: _handleVideoSelection),
+            // if (_selectedVideos.isNotEmpty)
+            //   Column(
+            //     children: _selectedVideos.map((video) => VideoPreview(videoFile: video)).toList(),
+            //   ),
           ],
         ),
       ),
