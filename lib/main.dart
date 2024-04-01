@@ -35,7 +35,8 @@ class _HomePageState extends State<HomePage> {
   void _handleImageSelection(List<XFile>? selectedFiles) {
     if (selectedFiles != null) {
       setState(() {
-        _selectedImages = selectedFiles.map((xFile) => File(xFile.path)).toList();
+        _selectedImages =
+            selectedFiles.map((xFile) => File(xFile.path)).toList();
       });
     }
   }
@@ -54,16 +55,31 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Media Selector Home Page'),
       ),
-      body: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             ImageSelector(onSelectImages: _handleImageSelection),
             if (_selectedImages.isNotEmpty)
-              ImagePreview(images: _selectedImages),
+              Expanded(
+                child: Column(
+                  children: _selectedImages
+                      .map(
+                        (imagen) => ImagePreview(images: _selectedImages),
+                      )
+                      .toList(),
+                ),
+              ),
             VideoSelector(onSelectVideo: _handleVideoSelection),
             if (_selectedVideos.isNotEmpty)
-              Column(
-                children: _selectedVideos.map((video) => VideoPreview(videoFile: video)).toList(),
+              Expanded(
+                child: Column(
+                  children: _selectedVideos
+                      .map(
+                        (video) => VideoPreview(videoFile: video),
+                      )
+                      .toList(),
+                ),
               ),
           ],
         ),
