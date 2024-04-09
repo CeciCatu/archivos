@@ -87,18 +87,43 @@ class _InteractiveGridState extends State<InteractiveGrid> {
   List<String> _videoThumbnails = [];
   List<Meeting> _getDataSource() {
     final List<Meeting> meetings = <Meeting>[];
-    // Populate your meetings here
     return meetings;
   }
+  CalendarView _calendarView = CalendarView.month;
+  final CalendarController _controller = CalendarController();
+  Color? _headerColor, _viewHeaderColor, _calendarColor;
+
+  void _changeCalendarView(CalendarView view) {
+    setState(() {
+      _calendarView = view;
+    });
+  }
+
   void _showSyncfusionCalendar(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
-          child: SfCalendar(
-            view: CalendarView.month,
-            dataSource: MeetingDataSource(_getDataSource()),
-            // Other calendar settings
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppBar(
+                title: Text("Calendar"),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.settings),
+                    onPressed: () {
+                    },
+                  ),
+                ],
+              ),
+              Expanded(
+                child: SfCalendar(
+                  view: _calendarView,
+                  dataSource: MeetingDataSource(_getDataSource()),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -185,6 +210,29 @@ class _InteractiveGridState extends State<InteractiveGrid> {
     );
   }
 
+  void calendarTapped(CalendarTapDetails calendarTapDetails) {
+    if (_controller.view == CalendarView.month && calendarTapDetails.targetElement == CalendarElement.calendarCell) {
+        _controller.view = CalendarView.day;
+    }
+    else if ((_controller.view == CalendarView.week || _controller.view == CalendarView.workWeek) && calendarTapDetails.targetElement == CalendarElement.viewHeader) {
+      _controller.view = CalendarView.day;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _headerColor = Colors.blue;
+    _viewHeaderColor = Colors.grey;
+    _calendarColor = Colors.white;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     int itemCount = 6 + _selectedImages.length + _selectedVideos.length;
@@ -192,6 +240,11 @@ class _InteractiveGridState extends State<InteractiveGrid> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Interactive Cards Grid'),
+        leading: IconButton(
+          icon: Icon(Icons.settings),
+              onPressed: (){
+      },
+        ),
       ),
       body: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -215,7 +268,6 @@ class _InteractiveGridState extends State<InteractiveGrid> {
             return GestureDetector(
               onTap: () => _showSyncfusionCalendar(context),
               child: Card(
-                // Card styling
                 child: Center(child: Text('Card $index')),
               ),
             );
