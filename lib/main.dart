@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 
 void main() {
@@ -26,10 +27,57 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class Meeting {
+  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
+
+  String eventName;
+  DateTime from;
+  DateTime to;
+  Color background;
+  bool isAllDay;
+}
+
+class MeetingDataSource extends CalendarDataSource {
+  MeetingDataSource(List<Meeting> source) {
+    appointments = source;
+  }
+
+  @override
+  DateTime getStartTime(int index) {
+    final Meeting meeting = appointments![index] as Meeting;
+    return meeting.from;
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    final Meeting meeting = appointments![index] as Meeting;
+    return meeting.to;
+  }
+
+  @override
+  String getSubject(int index) {
+    final Meeting meeting = appointments![index] as Meeting;
+    return meeting.eventName;
+  }
+
+  @override
+  Color getColor(int index) {
+    final Meeting meeting = appointments![index] as Meeting;
+    return meeting.background;
+  }
+
+  @override
+  bool isAllDay(int index) {
+    final Meeting meeting = appointments![index] as Meeting;
+    return meeting.isAllDay;
+  }
+}
+
 
 class InteractiveGrid extends StatefulWidget {
   @override
   _InteractiveGridState createState() => _InteractiveGridState();
+
 }
 
 class _InteractiveGridState extends State<InteractiveGrid> {
@@ -37,6 +85,26 @@ class _InteractiveGridState extends State<InteractiveGrid> {
   List<XFile> _selectedImages = [];
   List<XFile> _selectedVideos = [];
   List<String> _videoThumbnails = [];
+  List<Meeting> _getDataSource() {
+    final List<Meeting> meetings = <Meeting>[];
+    // Populate your meetings here
+    return meetings;
+  }
+  void _showSyncfusionCalendar(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: SfCalendar(
+            view: CalendarView.month,
+            dataSource: MeetingDataSource(_getDataSource()),
+            // Other calendar settings
+          ),
+        );
+      },
+    );
+  }
+
 
   void _pickMedia(BuildContext context, int index) async {
     if (index == 0) {
@@ -143,6 +211,16 @@ class _InteractiveGridState extends State<InteractiveGrid> {
               ),
             );
           }
+          if (index == 3) {
+            return GestureDetector(
+              onTap: () => _showSyncfusionCalendar(context),
+              child: Card(
+                // Card styling
+                child: Center(child: Text('Card $index')),
+              ),
+            );
+          }
+
           if (index >= 6) {
             int imageIndex = index - 6;
             if (imageIndex < _selectedImages.length) {
