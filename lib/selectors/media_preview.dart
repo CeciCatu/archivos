@@ -1,20 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:io';
+import 'package:path/path.dart' as path;
 
 class ImagePreview extends StatelessWidget {
   final List<File> images;
 
-  ImagePreview({required this.images});
+  const ImagePreview({super.key, required this.images});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: images.length,
-      itemBuilder: (context, index) {
-        return Image.file(images[index]);
-      },
+    // List<String> imageNames =
+    //     images.map((file) => file.path.split('/').last).toList();
+
+    return Column(
+      children: [
+        const Text("nombres de archivos"),
+        ListView.builder(
+          itemCount: nombres(images).length,
+          itemBuilder: (context, index) {
+            print(images.length);
+            return Column(
+              children: [
+                Text(nombres(images)[index]),
+                // Image.file(images[index]),
+              ],
+            );
+          },
+        ),
+      ],
     );
+  }
+
+  nombres(List<File> imagen) {
+    List<String> nombresDeImagenes = [];
+
+    for (var imagen in imagen) {
+      String nombre = path.basename(imagen.path);
+      nombresDeImagenes.add(nombre);
+    }
+
+    return nombresDeImagenes;
   }
 }
 
@@ -43,9 +69,9 @@ class _VideoPreviewState extends State<VideoPreview> {
   Widget build(BuildContext context) {
     return _controller.value.isInitialized
         ? AspectRatio(
-      aspectRatio: _controller.value.aspectRatio,
-      child: VideoPlayer(_controller),
-    )
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          )
         : Container();
   }
 
