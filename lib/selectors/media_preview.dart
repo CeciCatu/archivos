@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:io';
+import 'package:path/path.dart' as path;
 
 class ImagePreview extends StatefulWidget {
   final List<File> images;
 
-  ImagePreview({required this.images});
+  const ImagePreview({super.key, required this.images});
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -20,6 +21,17 @@ class _ImagePreviewState extends State<ImagePreview> {
         return Image.file(widget.images[index]);
       },
     );
+  }
+
+  nombres(List<File> imagen) {
+    List<String> nombresDeImagenes = [];
+
+    for (var imagen in imagen) {
+      String nombre = path.basename(imagen.path);
+      nombresDeImagenes.add(nombre);
+    }
+
+    return nombresDeImagenes;
   }
 }
 
